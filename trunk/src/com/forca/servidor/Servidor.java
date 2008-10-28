@@ -50,7 +50,7 @@ public class Servidor {
             	String line = br.readLine();
                 if(line.equals(Cliente.QUERO_NOVA_PALAVRA)){
                 	palavraAtual = palavras.elementAt(rnd.nextInt(palavras.size()-1));
-                	System.out.println("PALAVRA SETADA ->"+palavraAtual);
+                	//System.out.println("PALAVRA SETADA ->"+palavraAtual);
                 	ps.println(PALAVRA_SETADA);
                 }
             	 if(line.charAt(0) == Cliente.TESTA_LETRA.toCharArray()[0]){
