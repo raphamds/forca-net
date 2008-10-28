@@ -4,9 +4,12 @@ import java.net.*;
 import java.util.Random;
 import java.util.Vector;
 import java.io.*;
-// Listens for connection on port 6500,
-// receives messages and echoes them back
+
+
 public class Servidor {
+	
+	public static int erros = 0;
+	public static int QTD_MAX_ERROS = 4;
 	
 	public static Vector<String> palavras;
 	public static String palavraAtual;
@@ -22,13 +25,13 @@ public class Servidor {
 	public static void initPalavras(){
 		letrasDigitadas = new Vector<String>();
 		palavras = new Vector<String>();
-		palavras.add("Caju");
-		palavras.add("Policia");
-		palavras.add("Maracaipe");
-		palavras.add("hortolandia");
-		palavras.add("higienopolis");
-		palavras.add("paraiba");
-		palavras.add("astrolabio");
+		palavras.add("CAJU");
+		palavras.add("POLICIA");
+		palavras.add("MARACAIPE");
+		palavras.add("HORTOLANDIA");
+		palavras.add("HIGIENOPOLIS");
+		palavras.add("PARAIBA");
+		palavras.add("ASTROLABIO");
 	}
 	
     public static void main(String args[]) throws Exception {
@@ -36,36 +39,56 @@ public class Servidor {
         ServerSocket servidor = new ServerSocket(6500);
         Socket socket = null;
         Random rnd = new Random();
-        while(true) {
+        //while(true) {
             socket = servidor.accept();
             BufferedReader br = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
             PrintStream ps = new PrintStream(
                     socket.getOutputStream());
-            String line = br.readLine();
-            if(line.equals(Cliente.QUERO_NOVA_PALAVRA)){
-            	palavraAtual = palavras.elementAt(rnd.nextInt(palavras.size()-1));
-            	ps.println(PALAVRA_SETADA);
+            System.out.println("SERVIDOR STARTADO");
+            while(true){
+            	String line = br.readLine();
+                if(line.equals(Cliente.QUERO_NOVA_PALAVRA)){
+                	palavraAtual = palavras.elementAt(rnd.nextInt(palavras.size()-1));
+                	System.out.println("PALAVRA SETADA ->"+palavraAtual);
+                	ps.println(PALAVRA_SETADA);
+                }
+            	 if(line.charAt(0) == Cliente.TESTA_LETRA.toCharArray()[0]){
+                 	String letra = line.substring(2).toUpperCase();
+                 	if(palavraAtual.indexOf(letra)==-1){
+                 		erros++;
+                 		if(erros<QTD_MAX_ERROS){
+                 			ps.println(LETRA_NAO_ENCONTRADA);                 			
+                 		} else {
+                 			ps.println(GAME_OVER);
+                 		}
+                 		
+
+                 		//System.out.println(letra+" nao encontrada em "+palavraAtual);
+                 	} else {
+                 		letrasDigitadas.add(letra);
+                 		String mostruario = getMostruario();
+                 		if(letrasDigitadas.size()==palavraAtual.length() && letrasDigitadas.size()>0){
+                 			ps.println(GAME_OVER);
+                 		} else {
+                 			ps.println(LETRA_ENCONTRADA+mostruario);                 			
+                 		}
+                 		
+                 		//System.out.println(letra+" encontrada em "+palavraAtual);
+                 	}
+                 }
             }
-            if(line.charAt(0) == Cliente.TESTA_LETRA.toCharArray()[0]){
-            	String letra = line.substring(2);
-            	if(palavraAtual.indexOf(letra)==-1){
-            		ps.println(LETRA_NAO_ENCONTRADA);
-            	} else {
-            		letrasDigitadas.add(letra);
-            		ps.println(LETRA_ENCONTRADA+getMostruario());
-            	}
-            }
-            //ps.println("fuck->"+br.readLine()); // Echo input to output
-            socket.close();
-        }
+           
+        //}
     }
     
     public static String getMostruario(){
-    	String result = "";
-    	for(int x =0; x<palavraAtual.length(); x++){
-    		if(letrasDigitadas.indexOf(palavraAtual.substring(x,1))!=-1){
-    			result += palavraAtual.substring(x,1);
+    	String result = "-";
+    	for(int x =1; x<palavraAtual.length()+1; x++){
+    		String letraAtual = palavraAtual.substring(x-1,x);
+    		//System.out.println("pesquisando "+letraAtual);
+    		if(letrasDigitadas.indexOf(letraAtual)!=-1){
+    			result += letraAtual;
     		} else {
     			result += "_";
     		}
