@@ -12,7 +12,7 @@ public class Cliente {
 
 	public static String QUERO_NOVA_PALAVRA = "0";
 	public static String TESTA_LETRA = "1";
-	
+	public static int erros = 0;
 	public static PrintStream ps;
 	
     public static void main(String args[]) throws Exception {
@@ -28,6 +28,8 @@ public class Cliente {
         	String line = br.readLine();
         	//System.out.println("RESPOSTA DO SERVIDOR "+line);
         	if(line.equals(Servidor.GAME_OVER)){
+        		jogo.setImagem(erros+1);
+        		erros = 0;        		
         		int outravez = JOptionPane.showConfirmDialog(null, "GAME OVER !! Jogar outra vez ?");
     			if(outravez == JOptionPane.OK_OPTION){
     				ps.println(QUERO_NOVA_PALAVRA);
@@ -38,11 +40,15 @@ public class Cliente {
         	if(line.equals(Servidor.PALAVRA_SETADA) || line.equals(Servidor.LETRA_NAO_ENCONTRADA)){
         		if(line.equals(Servidor.LETRA_NAO_ENCONTRADA)){
         			//System.out.println("LETRA NAO ENCONTRADA");
-        			JOptionPane.showMessageDialog(null, "LETRA NAO ENCONTRADA");
+        			erros += 1;
+        			jogo.setImagem(erros);
+        			//JOptionPane.showMessageDialog(null, "LETRA NAO ENCONTRADA");
+        			
         		}
         		if(line.equals(Servidor.PALAVRA_SETADA)){
         			jogo.getDica().setText(br.readLine().toUpperCase());
         			jogo.getLabel().setText(br.readLine());
+        			jogo.setImagem(0);
         		}
         		jogo.getCaixa().setText("");
         		jogo.getCaixa().requestFocus();
@@ -58,6 +64,8 @@ public class Cliente {
         		jogo.getCaixa().requestFocus();
         		if(exibir.indexOf("_")==-1){
         			//JOptionPane.showMessageDialog(null, "GAME OVER !!!");
+        			jogo.setImagem(erros+1);
+        			erros = 0;
         			int outravez = JOptionPane.showConfirmDialog(null, "GAME OVER !! Jogar outra vez ?");
         			if(outravez == JOptionPane.OK_OPTION){
         				ps.println(QUERO_NOVA_PALAVRA);

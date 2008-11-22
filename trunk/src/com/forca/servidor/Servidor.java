@@ -9,7 +9,7 @@ import java.io.*;
 public class Servidor {
 	
 	public static int erros = 0;
-	public static int QTD_MAX_ERROS = 4;
+	public static int QTD_MAX_ERROS = 5;
 	
 	public static Vector<Palavra> palavras;
 	public static Palavra palavraAtual;
