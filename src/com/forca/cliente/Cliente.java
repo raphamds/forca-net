@@ -14,19 +14,50 @@ public class Cliente {
 	public static String TESTA_LETRA = "1";
 	public static int erros = 0;
 	public static PrintStream ps;
-	
-    public static void main(String args[]) throws Exception {
-    	Jogo jogo = new Jogo();
-    	String host = "10.0.4.1";
-        Socket socket = new Socket(host, 6500);
-        BufferedReader br = new BufferedReader(
-                new InputStreamReader(socket.getInputStream()));
-        ps = new PrintStream(socket.getOutputStream());
+	public static Jogo jogo;
+
+	public static void startarJogo(){
+		String host = "192.168.1.9";
+        Socket socket = null;
+		try {
+			socket = new Socket(host, 6500);
+			
+			
+		} catch (UnknownHostException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+        BufferedReader br = null;
+		try {
+			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+        try {
+			ps = new PrintStream(socket.getOutputStream());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
         ps.println(QUERO_NOVA_PALAVRA);
         jogo.setVisible(true);
         while(true){
-        	String line = br.readLine();
+        	String line = null;
+			try {
+				line = br.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         	//System.out.println("RESPOSTA DO SERVIDOR "+line);
+			
+			if(line.equals(Servidor.VICTORY)){
+        		erros = 0;        		
+        		int outravez = JOptionPane.showConfirmDialog(null, "PARABÉNS, VOCÊ VENCEU !! Jogar outra vez ?");
+    			if(outravez == JOptionPane.OK_OPTION){
+    				ps.println(QUERO_NOVA_PALAVRA);
+    			}
+        	}
+			
         	if(line.equals(Servidor.GAME_OVER)){
         		jogo.setImagem(erros+1);
         		erros = 0;        		
@@ -46,8 +77,16 @@ public class Cliente {
         			
         		}
         		if(line.equals(Servidor.PALAVRA_SETADA)){
-        			jogo.getDica().setText(br.readLine().toUpperCase());
-        			jogo.getLabel().setText(br.readLine());
+        			try {
+						jogo.getDica().setText(br.readLine().toUpperCase());
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+        			try {
+						jogo.getLabel().setText(br.readLine());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
         			jogo.setImagem(0);
         		}
         		jogo.getCaixa().setText("");
@@ -91,6 +130,11 @@ public class Cliente {
         }
         
         //System.out.println("GAME OVER");
+	}
+	
+    public static void main(String args[]) throws Exception {
+    	jogo = new Jogo();
+    	startarJogo();
     }
    
     

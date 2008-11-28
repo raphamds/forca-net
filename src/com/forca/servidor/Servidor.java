@@ -16,9 +16,9 @@ public class Servidor {
 	
 	public static String PALAVRA_SETADA = "0";
 	public static String GAME_OVER = "1";
-	
 	public static String LETRA_ENCONTRADA = "2";
 	public static String LETRA_NAO_ENCONTRADA = "3";
+	public static String VICTORY = "4";
 	
 	public static Vector<String> letrasDigitadas;
 	
@@ -74,7 +74,7 @@ public class Servidor {
                 if(line.equals(Cliente.QUERO_NOVA_PALAVRA)){
                 	init();
                 	palavraAtual = palavras.elementAt(rnd.nextInt(palavras.size()-1));
-                	//System.out.println("PALAVRA SETADA ->"+palavraAtual);
+                	System.out.println("PALAVRA SETADA ->"+palavraAtual.getPalavra());
                 	ps.println(PALAVRA_SETADA);
                 	ps.println(palavraAtual.getDica());
                 	ps.println(getMostruario());
@@ -95,8 +95,8 @@ public class Servidor {
                  	} else {
                  		letrasDigitadas.add(letra);
                  		String mostruario = "-"+getMostruario();
-                 		if(letrasDigitadas.size()==palavraAtual.getPalavra().length() && letrasDigitadas.size()>0){
-                 			ps.println(GAME_OVER);
+                 		if(sairamTodasAsLetras()){
+                 			ps.println(VICTORY);
                  		} else {
                  			ps.println(LETRA_ENCONTRADA+mostruario);                 			
                  		}
@@ -107,6 +107,29 @@ public class Servidor {
             }
            
         //}
+    }
+    
+    public static boolean letraSaiu(char letra){
+    	boolean result = false;
+		for(int x=0; x<letrasDigitadas.size(); x++){
+			String lt = (String)letrasDigitadas.elementAt(x);
+			System.out.println("comparando "+lt+" com "+letra);
+			if(lt.equals(letra)) return true;
+		}
+		System.out.println(letra + " nao tem");
+    	return result;
+    }
+    
+    public static boolean sairamTodasAsLetras(){
+    	boolean result = true;
+    	String plv = palavraAtual.getPalavra();
+    	for(int x=0; x<plv.length();x++){
+    		System.out.println(plv.length());
+    		System.out.println("LETRA->"+plv.charAt(x)+"<-");
+    		if(!letraSaiu(plv.charAt(x))) return false;
+    	}
+    	System.out.println("sairam todas as letras, vitoria");
+    	return result;
     }
     
     public static String getMostruario(){
