@@ -1,4 +1,6 @@
 package com.forca.servidor;
+import com.DataBase;
+import com.ItemRank;
 import com.forca.cliente.*;
 import java.net.*;
 import java.util.Random;
@@ -9,6 +11,9 @@ import sun.text.normalizer.UProperty;
 
 
 public class Servidor {
+	public static String nomeCliente = "default name";
+	public static int vezesSemPerder = 0;
+	public static String nivel = "1";
 	
 	public static int erros = 0;
 	public static int QTD_MAX_ERROS = 5;
@@ -54,7 +59,9 @@ public class Servidor {
 		palavras.add(new Palavra("profissao", "ANALISTA"));
 	}
 	
-	public static Palavra getNovaPalavra(String nivel){
+	public static Palavra getNovaPalavra(String _nivel){
+		System.out.println("setando o nivel para "+_nivel);
+		nivel = _nivel;
 		XML xml = new XML(nivel);
 		Palavra plv = new Palavra(xml.dica,xml.palavra);
 		plv.setNivel("1");
@@ -85,6 +92,7 @@ public class Servidor {
                 	init();
                 	//palavraAtual = palavras.elementAt(rnd.nextInt(palavras.size()-1));
                 	palavraAtual = getNovaPalavra(br.readLine());
+                	nomeCliente = br.readLine();
                 	System.out.println("PALAVRA SETADA ->"+palavraAtual.getPalavra());
                 	ps.println(PALAVRA_SETADA);
                 	ps.println(palavraAtual.getDica());
@@ -99,6 +107,7 @@ public class Servidor {
                  			ps.println(LETRA_NAO_ENCONTRADA);                 			
                  		} else {
                  			ps.println(GAME_OVER);
+                 			ps.println(tratarRanking());
                  		}
                  		
 
@@ -107,6 +116,7 @@ public class Servidor {
                  		letrasDigitadas.add(letra);
                  		String mostruario = "-"+getMostruario();
                  		if(sairamTodasAsLetras()){
+                 			vezesSemPerder += 1;
                  			ps.println(VICTORY);
                  		} else {
                  			ps.println(LETRA_ENCONTRADA+mostruario);                 			
@@ -120,13 +130,26 @@ public class Servidor {
         //}
     }
     
-    public static boolean letraSaiu(char letra){
+    private static String tratarRanking() {
+		// TODO Auto-generated method stub
+		if(DataBase.getDataBase().entraNoRanking(nivel, vezesSemPerder)){
+			DataBase.getDataBase().inserirNoRanking(nomeCliente, nivel, vezesSemPerder);
+		}
+		String result = "Ranking|";
+		Vector<ItemRank> vetor = DataBase.getDataBase().getRankingByNivel(nivel);
+		for(int x=0; x<vetor.size(); x++){
+			result += String.valueOf(x+1) + " lugar - "+vetor.elementAt(x).nome + "|" + String.valueOf(vetor.elementAt(x).pontos) +" pontos||";
+		}
+		return result;
+	}
+
+	public static boolean letraSaiu(char letra){
     	boolean result = false;
 		for(int x=0; x<letrasDigitadas.size(); x++){
 			String lt = (String)letrasDigitadas.elementAt(x);
 			lt = lt.toUpperCase();
 			letra = Character.toUpperCase(letra);
-			System.out.println("comparando "+lt+" com "+letra);
+			//System.out.println("comparando "+lt+" com "+letra);
 			if(lt.charAt(0) == letra) return true;
 		}
 		System.out.println(letra + " nao tem");
