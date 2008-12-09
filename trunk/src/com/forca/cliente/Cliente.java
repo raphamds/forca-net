@@ -1,6 +1,6 @@
 package com.forca.cliente;
 import java.net.*;
-import java.util.Scanner;
+//import java.util.Scanner;
 import java.io.*;
 
 import javax.swing.JOptionPane;
@@ -9,7 +9,11 @@ import com.forca.formulario.Jogo;
 import com.forca.servidor.Servidor;
 
 public class Cliente {
-
+	public static String SERVER_IP = "192.168.1.100";
+	public static String CLIENT_NAME;
+	public static String GAME_LEVEL;
+	
+	
 	public static String QUERO_NOVA_PALAVRA = "0";
 	public static String TESTA_LETRA = "1";
 	public static int erros = 0;
@@ -17,7 +21,7 @@ public class Cliente {
 	public static Jogo jogo;
 
 	public static void startarJogo(){
-		String host = "192.168.1.9";
+		String host = Cliente.SERVER_IP;
         Socket socket = null;
 		try {
 			socket = new Socket(host, 6500);
@@ -40,7 +44,8 @@ public class Cliente {
 			e1.printStackTrace();
 		}
         ps.println(QUERO_NOVA_PALAVRA);
-        jogo.setVisible(true);
+        ps.println(GAME_LEVEL);
+        
         while(true){
         	String line = null;
 			try {
@@ -52,9 +57,10 @@ public class Cliente {
 			
 			if(line.equals(Servidor.VICTORY)){
         		erros = 0;        		
-        		int outravez = JOptionPane.showConfirmDialog(null, "PARABÉNS, VOCÊ VENCEU !! Jogar outra vez ?");
+        		int outravez = JOptionPane.showConfirmDialog(null, "PARABENS, VOCE VENCEU !! Jogar outra vez ?");
     			if(outravez == JOptionPane.OK_OPTION){
     				ps.println(QUERO_NOVA_PALAVRA);
+    				ps.println(GAME_LEVEL);
     			}
         	}
 			
@@ -64,6 +70,7 @@ public class Cliente {
         		int outravez = JOptionPane.showConfirmDialog(null, "GAME OVER !! Jogar outra vez ?");
     			if(outravez == JOptionPane.OK_OPTION){
     				ps.println(QUERO_NOVA_PALAVRA);
+    				ps.println(GAME_LEVEL);
     			}else {
     				break;        				
     			}
@@ -108,6 +115,7 @@ public class Cliente {
         			int outravez = JOptionPane.showConfirmDialog(null, "GAME OVER !! Jogar outra vez ?");
         			if(outravez == JOptionPane.OK_OPTION){
         				ps.println(QUERO_NOVA_PALAVRA);
+        				ps.println(GAME_LEVEL);
         			}else {
         				break;        				
         			}
@@ -133,9 +141,21 @@ public class Cliente {
 	}
 	
     public static void main(String args[]) throws Exception {
+    	Configurar cfg = new Configurar();
     	jogo = new Jogo();
-    	startarJogo();
+    	jogo.setVisible(true);
+    	cfg.setVisible(true);
+    	
+		//Cliente.configOk();
     }
    
+    public static void configOk(){
+    	jogo.requestFocus();
+    	jogo.paint(jogo.getGraphics());
+    	jogo.repaint();
+    	//Configurar.sair();
+    	startarJogo();
+    }
+    
     
 }

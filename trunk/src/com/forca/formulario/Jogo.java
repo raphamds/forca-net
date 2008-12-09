@@ -9,8 +9,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class Jogo extends JFrame implements ActionListener{
@@ -35,6 +37,7 @@ public class Jogo extends JFrame implements ActionListener{
 		label = new JLabel("Jogo da Forca");
 		dica = new JLabel();
 		caixa = new JTextField();
+		caixa.setColumns(1);
 		botao = new JButton("Enviar");
 		botao.addActionListener(this);
 		imagem = new JLabel();
@@ -50,11 +53,20 @@ public class Jogo extends JFrame implements ActionListener{
 		frame.setLocation(0,0);
 		frame.add(imagem);
 		frame.setVisible(true);
+		
+		this.requestFocus();
+		this.repaint();
+		System.out.println("formulario setado");
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
 			String letra = getCaixa().getText();
-			Cliente.ps.println(Cliente.TESTA_LETRA+"-"+letra);
+			if(letra.length()>0) {
+				Cliente.ps.println(Cliente.TESTA_LETRA+"-"+letra);
+			} else {
+				JOptionPane.showMessageDialog(null, "Digite uma letra");
+			}
+			
 			//System.out.println("click do botao");
 	}
 
@@ -93,13 +105,9 @@ public class Jogo extends JFrame implements ActionListener{
 	public void setImagem(int erros) {
 		 System.out.println("erros -> "+erros);
 		 
-		 Image img = tk.getImage(getClass().getResource(Integer.toString(erros)+".jpg"));      
-		 ImageIcon icone = new ImageIcon(img);
-		 //remove(imagem);
-		 imagem.setIcon(icone);
-		 //frame.add(imagem);
-		 //frame.setVisible(true);
-		 //this.add(imagem);
+		 //Image img = tk.getImage(getClass().getResource(Integer.toString(erros)+".jpg"));      
+		 //ImageIcon icone = new ImageIcon(img);
+		 //imagem.setIcon(icone);
 		 frame.repaint();
 		// TODO Auto-generated method stub
 		

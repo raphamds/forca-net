@@ -5,6 +5,8 @@ import java.util.Random;
 import java.util.Vector;
 import java.io.*;
 
+import sun.text.normalizer.UProperty;
+
 
 public class Servidor {
 	
@@ -52,6 +54,14 @@ public class Servidor {
 		palavras.add(new Palavra("profissao", "ANALISTA"));
 	}
 	
+	public static Palavra getNovaPalavra(String nivel){
+		XML xml = new XML(nivel);
+		Palavra plv = new Palavra(xml.dica,xml.palavra);
+		plv.setNivel("1");
+		return plv;
+		
+	}
+	
 	public static void init(){
 		erros = 0;
 		letrasDigitadas = new Vector<String>();
@@ -73,7 +83,8 @@ public class Servidor {
             	String line = br.readLine();
                 if(line.equals(Cliente.QUERO_NOVA_PALAVRA)){
                 	init();
-                	palavraAtual = palavras.elementAt(rnd.nextInt(palavras.size()-1));
+                	//palavraAtual = palavras.elementAt(rnd.nextInt(palavras.size()-1));
+                	palavraAtual = getNovaPalavra(br.readLine());
                 	System.out.println("PALAVRA SETADA ->"+palavraAtual.getPalavra());
                 	ps.println(PALAVRA_SETADA);
                 	ps.println(palavraAtual.getDica());
@@ -113,8 +124,10 @@ public class Servidor {
     	boolean result = false;
 		for(int x=0; x<letrasDigitadas.size(); x++){
 			String lt = (String)letrasDigitadas.elementAt(x);
+			lt = lt.toUpperCase();
+			letra = Character.toUpperCase(letra);
 			System.out.println("comparando "+lt+" com "+letra);
-			if(lt.equals(letra)) return true;
+			if(lt.charAt(0) == letra) return true;
 		}
 		System.out.println(letra + " nao tem");
     	return result;
