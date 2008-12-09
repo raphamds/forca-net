@@ -46,7 +46,7 @@ public class Configurar extends JFrame implements ActionListener{
 		txNivel.setText("1");
 		
 		start = new JButton("Começar");
-		start.addActionListener(this);
+		//start.addActionListener(this);
 		
 		this.add(nome);
 		this.add(txNome);
@@ -59,18 +59,7 @@ public class Configurar extends JFrame implements ActionListener{
 		//setVisible(true);
 	}
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		cfg = new Configurar();
-	}
 
-	public static void sair(){
-		//cfg.setVisible(false);
-		//cfg.dispose();
-		//cfg.removeAll();
-		//cfg.
-	}
-	
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 
@@ -80,7 +69,7 @@ public class Configurar extends JFrame implements ActionListener{
 			Cliente.SERVER_IP = txIp.getText();
 			//this.setVisible(false);
 			this.dispose();
-			Cliente.configOk();
+			//Cliente.configOk();
 				try {
 					//Cliente.main(null);
 					
