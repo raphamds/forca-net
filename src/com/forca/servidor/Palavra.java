@@ -6,20 +6,26 @@ public class Palavra {
 		setDica(_dica);
 		setPalavra(_palavra);
 	}
-	
+	private String nivel;
 	private String palavra;
 	private String dica;
 	public String getPalavra() {
 		return palavra;
 	}
 	public void setPalavra(String palavra) {
-		this.palavra = palavra;
+		this.palavra = palavra.toUpperCase();
 	}
 	public String getDica() {
 		return dica;
 	}
 	public void setDica(String dica) {
 		this.dica = dica;
+	}
+	public String getNivel() {
+		return nivel;
+	}
+	public void setNivel(String nivel) {
+		this.nivel = nivel;
 	}
 	
 }
